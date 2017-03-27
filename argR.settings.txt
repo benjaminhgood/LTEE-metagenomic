@@ -1,0 +1,64 @@
+######################################################
+#
+# Make a copy of this file and edit it to your liking
+#
+######################################################
+
+# Which population to plot
+populations = ['m5','p2','p4','p1','p5','m6']
+
+# Which range of generations to plot
+tmin = 0
+tmax = 60000
+
+# Output filename
+filename = parse_file.figure_directory+'supplemental_argR.png'
+
+# Mininum coverage for frequency estimation vs interpolation 
+min_coverage = 10
+
+PLOT_FMINOR = [False]*len(populations)
+PLOT_FMAJOR = [False]*len(populations)
+
+COLORED_LINEWIDTH=3
+PLOT_APPEARANCE_TIME=True
+
+####################################################################
+#
+#  Function controlling which mutations are colored
+#
+#      Returns: true for colored
+#               false for not colored
+#
+####################################################################
+def color_condition(population_idx, location, gene_name, var_type, f, L, extra_data):
+    #
+    # location = genome coordinate in REL606 reference
+    # gene_name = name of gene ('intergenic' of not in gene)
+    # var_type = { 'non': nonsynonymous SNP,
+    #              'syn': synonymous SNP,
+    #              'promoter': SNP w/in X bp of gene start
+    #              'intergenic': SNP not in first 3 categories
+    #              'sv': structural variant
+    # f = interpolation function for mutation frequency
+    #     i.e., f(1000) = interpolated frequency at generation 1000
+    # L = haplotype classification
+    # extra_data = used for debugging purposes
+    #
+    ###############################################################
+    
+    condition = gene_name=='argR'
+    
+    # Examples:
+    # 
+    # Mutation is in the majority at the end of the experiment
+    # condition = f(60000) > 0.5
+    #
+    # Mutation is a structural variant in the nadR gene
+    # condition = (gene_name == 'nadR') and var_type='sv'
+    #
+    # Mutation is in one of the mut* genes
+    # condition = gene_name.startswith('mut')
+    # ... 
+    
+    return condition
