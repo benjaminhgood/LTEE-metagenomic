@@ -1,0 +1,2 @@
+tar -czf scripts.tar.gz README.txt REL606.6.gbk archive_scripts.sh check_fastq_files.sh download_clone_data.sh trim_adapters.sh breseq_genomes.sh merge_candidate_junctions.sh rebreseq_genomes.sh create_distributed_timecourse.sh create_merged_timecourse.sh download_clone_data.sbatch trim_adapters.sbatch breseq_genomes.sbatch rebreseq_genomes.sbatch create_timecourse.sbatch parse_file.py population_parameters.py create_timecourse.py create_breseq_timecourse.py population_samples.csv clone_samples.csv 
+
