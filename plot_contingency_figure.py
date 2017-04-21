@@ -196,6 +196,8 @@ pooled_time_axis.set_xticks(figure_utils.time_xticks)
 pooled_time_axis.set_xticklabels(figure_utils.time_xticklabels)
 pooled_time_axis.set_xlim([0,60000])
 
+
+
 ####################################
 #
 # Supplemental Fig: Temporal LRT as function of time

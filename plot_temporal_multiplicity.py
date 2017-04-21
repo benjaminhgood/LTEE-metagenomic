@@ -215,9 +215,11 @@ all_survival_ms, all_survivals = stats_utils.calculate_unnormalized_survival_fro
 
 theory_ms = numpy.logspace(0,2,100)
 multiplicity_axis.loglog(theory_ms, null_survival_function(theory_ms),color='0.7',linewidth=0.5)
-multiplicity_axis.step(all_survival_ms, all_survivals*1.0/all_survivals[0],color=all_color,linewidth=0.5)
-multiplicity_axis.step(early_survival_ms, early_survivals*1.0/early_survivals[0],color=early_color)
-multiplicity_axis.step(late_survival_ms, late_survivals*1.0/late_survivals[0],color=late_color)
+multiplicity_axis.step(all_survival_ms, all_survivals*1.0/all_survivals[0],color=all_color,linewidth=0.5,label='All')
+multiplicity_axis.step(early_survival_ms, early_survivals*1.0/early_survivals[0],color=early_color,label=('$\leq t^* = %g\mathrm{k}$' % (tstar/1000.0)))
+multiplicity_axis.step(late_survival_ms, late_survivals*1.0/late_survivals[0],color=late_color,label=('$> t^* = %g\mathrm{k}$' % (tstar/1000.0)))
+
+multiplicity_axis.legend(loc='upper right',frameon=False)
 
 if level=='gene':
     fig.savefig( parse_file.figure_directory+"supplemental_temporal_multiplicity.pdf",bbox_inches='tight')

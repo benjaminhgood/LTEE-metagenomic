@@ -125,6 +125,14 @@ if return_val==0:
 else:
     sys.stdout.write("Error w/ Supplemental iclR trajectories!\n\n")
 
+sys.stdout.write("Plotting Supplemental hslU trajectories...\n") 
+return_val = os.system('python plot_timecourse.py hslU.settings.txt')
+if return_val==0:
+    sys.stdout.write("Done w/ Supplemental hslU trajectories!\n\n")
+else:
+    sys.stdout.write("Error w/ Supplemental hslU trajectories!\n\n")
+
+
 sys.stdout.write("Plotting Supplemental atoS trajectories...\n") 
 return_val = os.system('python plot_timecourse.py atoS.settings.txt')
 if return_val==0:

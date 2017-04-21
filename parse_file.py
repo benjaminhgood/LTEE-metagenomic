@@ -6,7 +6,7 @@ import os
 
 
 data_directory='data_files/'
-figure_directory='figures/'
+figure_directory='manuscript/figures/'
 
 default_min_depth = 5
 

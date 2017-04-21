@@ -22,6 +22,7 @@ def infer_hmm(A, D, f0s=None, num_iterations=10, penalize_clades=True, infer_fs=
         estimate_f0 = False
         fmajor0s, fminor0s = f0s
     
+    
     # fixed params
     epsF = 0.025 # error rate from 100% for fixed mutations
     epsE = 0.025 # error rate from 0% for extinct or unborn mutations
@@ -31,8 +32,6 @@ def infer_hmm(A, D, f0s=None, num_iterations=10, penalize_clades=True, infer_fs=
     
     # transition rates for markov chain    
     overall_birth_rate = 2e-02
-    ancestral_birth_rate = overall_birth_rate/4 
-    clade_birth_rate = overall_birth_rate*3/8
     ancestral_fix_rate = 0.5
     clade_fix_rate = 0.5
     rebirth_rate = 1e-06
@@ -165,13 +164,35 @@ def infer_hmm(A, D, f0s=None, num_iterations=10, penalize_clades=True, infer_fs=
         fminors = fminor0s
     
     if ((fmajors+fminors)>0.2).sum() < 1:
-        print "Disallowing transitions!"
-        # do not allow transitions to clades
-        #print "disallowing transitions"
-        ancestral_birth_rate = overall_birth_rate 
-        clade_birth_rate = 0
+        sys.stderr.write("Insufficient evidence for frequency-dependence!\n")
+        fmajors[:] = 0
+        fminors[:] = 0
+        infer_fs=False
+        
+    # Disallow transitions to clades before they first appear
+    if infer_fs==False and penalize_clades==True:
+        
+        allowed_major_transitions = numpy.zeros_like(fmajors)
+        allowed_minor_transitions = numpy.zeros_like(fminors)
     
-    
+        nonzero_major_idxs = numpy.nonzero(fmajors>1e-03)[0]
+        if len(nonzero_major_idxs)>0:
+            # At least one timepoint where the clade is present!
+            # Allow some clade transitions!
+            allowed_major_transitions[nonzero_major_idxs[0]:] = 1
+        
+        
+        nonzero_minor_idxs = numpy.nonzero(fminors>1e-03)[0]
+        if len(nonzero_minor_idxs)>0:
+            # At least one timepoint where the clade is present!
+            # Allow some clade transitions!
+            allowed_minor_transitions[nonzero_minor_idxs[0]:] = 1
+        
+    else:
+        allowed_major_transitions = numpy.ones_like(fmajors)
+        allowed_minor_transitions = numpy.ones_like(fminors)
+       
+                  
     ftotals = numpy.clip(fmajors+fminors,min_clade_freq,1-min_clade_freq)    
     fmajors = numpy.clip(fmajors,min_clade_freq,1-min_clade_freq)
     fminors = numpy.clip(fminors,min_clade_freq,1-min_clade_freq)
@@ -227,18 +248,15 @@ def infer_hmm(A, D, f0s=None, num_iterations=10, penalize_clades=True, infer_fs=
             Q[t,states['FM'],states['PM']] = clade_fix_rate/2
             
             # Polymorphic basal
-            Q[t,states['PB'],states['A']] = ancestral_birth_rate
-            #Q[t,states['PB'],states['E']] = rebirth_rate/3
+            Q[t,states['PB'],states['A']] = overall_birth_rate*overall_birth_rate*(2.0/(2.0+3.0*allowed_minor_transitions[t]+3.0*allowed_major_transitions[t]))
             Q[t,states['PB'],states['PB']] = 1 - ancestral_fix_rate
             
             # Poly-minority
-            Q[t,states['Pm'],states['A']] = clade_birth_rate
-            #Q[t,states['Pm'],states['E']] = rebirth_rate/3
+            Q[t,states['Pm'],states['A']] = overall_birth_rate*(3.0*allowed_minor_transitions[t]/(2.0+3.0*allowed_minor_transitions[t]+3.0*allowed_major_transitions[t]))
             Q[t,states['Pm'],states['Pm']] = 1-clade_fix_rate
             
             # Poly-majority
-            Q[t,states['PM'],states['A']] = clade_birth_rate
-            #Q[t,states['PM'],states['E']] = rebirth_rate/3
+            Q[t,states['PM'],states['A']] = overall_birth_rate*(3.0*allowed_major_transitions[t]/(2.0+3.0*allowed_minor_transitions[t]+3.0*allowed_major_transitions[t]))
             Q[t,states['PM'],states['PM']] = 1-clade_fix_rate
             
             # From within-clade to population-wide fixation
@@ -477,8 +495,20 @@ def infer_hmm(A, D, f0s=None, num_iterations=10, penalize_clades=True, infer_fs=
             
             for t in xrange(1,T):
             
+                # total likelihood of going from initial point to final point, passing through middle point
+                
+                
+                
                 new_likelihoods = max_likelihood_table[:,t-1,None,:]*Q[None,t-1,:,:]
                 
+                #if debug==True:
+                #    if t<10:
+                #        print "New Likelihoods", t, fmajors[t], A[0,t], D[0,t]
+                        #print new_likelihoods[0,states['PM'],states['PM']], new_likelihoods[0,states['PM'],states['A']]  
+                        #print new_likelihoods[0,states['FM'],states['FM']], new_likelihoods[0,states['FM'],states['PM']]
+                #        print new_likelihoods[0,states['PM']]
+                #        print new_likelihoods[0,states['FM']]
+                    
                 max_likelihood_table[:,t,:] = new_likelihoods.max(axis=2)
                 state_pointer_table[:,t-1,:] = new_likelihoods.argmax(axis=2)
                 
@@ -491,6 +521,22 @@ def infer_hmm(A, D, f0s=None, num_iterations=10, penalize_clades=True, infer_fs=
                 scale = max_likelihood_table[:,t,:].max(axis=1)
                 scale = numpy.outer(numpy.clip(scale,1e-300,1e300),numpy.ones(L))
                 max_likelihood_table[:,t,:] /= scale
+            
+                #if debug==True:
+                #    if t<10:
+                #        print "Likelihood table", t
+                #        print max_likelihood_table[0,t,:]
+            
+            #if debug==True:
+            #    print "Likelihood table"
+            #    print "A", max_likelihood_table[0,0:10,states['A']]
+            #    print "PM", max_likelihood_table[0,0:10,states['PM']]
+            #    print "FM", max_likelihood_table[0,0:10,states['FM']]
+            #    print "State pointer table"
+            #    print state_pointer_table[0,0:10,states['A']]
+            #    print state_pointer_table[0,0:10,states['PM']]
+            #    print state_pointer_table[0,0:10,states['FM']]
+                
                 
             # follow path back
             Ls = numpy.zeros((M,T),dtype=numpy.int32)

@@ -143,7 +143,7 @@ vartype_pfix_axis.spines['right'].set_visible(False)
 vartype_pfix_axis.get_xaxis().tick_bottom()
 vartype_pfix_axis.get_yaxis().tick_left()
 
-vartype_pfix_axis.set_ylabel('$\mathrm{Pr}[\mathrm{fixed}|\mathrm{detected}$')
+vartype_pfix_axis.set_ylabel('$\mathrm{Pr}[\mathrm{fixed}|\mathrm{detected}]$')
 vartype_pfix_axis.set_ylim([0,1.05])
 vartype_pfix_axis.set_xlim([-0.5,len(parse_file.var_types)-0.5])
 vartype_pfix_axis.set_xticks(numpy.arange(0,len(parse_file.var_types)))
@@ -525,7 +525,11 @@ for metapopulation in metapopulations:
     
         # calculate percentile estimates for each bin using Bayesian posterior
         binned_pfix_upper = numpy.array([beta.ppf(0.84, binned_response[i]+syn_pfix, binned_num[i]-binned_response[i]+(1-syn_pfix), loc=0, scale=1) for i in xrange(0,len(binned_num))])
-        binned_pfix_mid = numpy.array([beta.ppf(0.50, binned_response[i]+1, binned_num[i]-binned_response[i]+1, loc=0, scale=1) for i in xrange(0,len(binned_num))])
+        
+        # New version: plot average
+        binned_pfix_mid = numpy.array([binned_response[i]*1.0/binned_num[i] for i in xrange(0,len(binned_num))])
+        # Old version: plot median
+        #binned_pfix_mid = numpy.array([beta.ppf(0.50, binned_response[i]+1, binned_num[i]-binned_response[i]+1, loc=0, scale=1) for i in xrange(0,len(binned_num))])
         binned_pfix_lower = numpy.array([beta.ppf(0.16, binned_response[i]+syn_pfix, binned_num[i]-binned_response[i]+(1-syn_pfix), loc=0, scale=1) for i in xrange(0,len(binned_num))])
     
         alpha=0.5

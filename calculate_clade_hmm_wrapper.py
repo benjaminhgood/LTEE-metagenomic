@@ -88,27 +88,11 @@ for population in populations:
         fminors = numpy.zeros_like(fminors)
         fmajors = numpy.zeros_like(fmajors)
     
-    # run with debug mutation
-    #A = []
-    #D = []
-    #for i in xrange(0,len(mutations)):  
-    #    if mutation_data[i][0]==4567083:
-    #        Ai,Di = mutations[i]
-    #        A.append(Ai)
-    #        D.append(Di)
-    
-    #if len(A)>0:
-    #    A = numpy.array(A)
-    #    D = numpy.array(D)
-    
-    #    print "Starting debug round"
-    #    Pstate , Ls, fmajors, fminors = clade_model.infer_hmm(A,D,f0s=(fmajors,fminors),num_iterations=2,infer_fs=False,debug=True)     
-            
-    
     sys.stdout.write("%s: length of coexistence = %g\n" % (population,length))
+
         
     # now run again with all mutations
-    # (just one round though)
+    # (but treat clade frequencies as fixed)
     A = []
     D = []
     for i in xrange(0,len(mutations)):
@@ -118,7 +102,7 @@ for population in populations:
     A = numpy.array(A)
     D = numpy.array(D)
     
-    Pstate , Ls, fmajors, fminors = clade_model.infer_hmm(A,D,f0s=(fmajors,fminors),num_iterations=5,infer_fs=False)     
+    Pstate , Ls, fmajors, fminors = clade_model.infer_hmm(A,D,f0s=(fmajors,fminors),num_iterations=5,infer_fs=False)              
     
     # make thing that says if filtered:
     

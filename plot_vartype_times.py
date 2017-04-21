@@ -36,9 +36,9 @@ mpl.rcParams['legend.fontsize']  = 'small'
 #
 ####
 
-fig = plt.figure(figsize=(3, 1.7))
+fig = plt.figure(figsize=(6.2, 1.7))
 
-grid = gridspec.GridSpec(1, 1)
+grid = gridspec.GridSpec(1, 2, width_ratios=[1,1], wspace=0.1)
 
 time_axis = plt.Subplot(fig, grid[0])
 fig.add_subplot(time_axis)
@@ -53,6 +53,21 @@ time_axis.set_xlabel('Appearance time, $t$')
 time_axis.set_xticks(figure_utils.time_xticks)
 time_axis.set_xticklabels(figure_utils.time_xticklabels)
 time_axis.set_xlim([0,60000])
+
+missense_time_axis = plt.Subplot(fig, grid[1])
+fig.add_subplot(missense_time_axis)
+
+
+missense_time_axis.spines['top'].set_visible(False)
+missense_time_axis.spines['right'].set_visible(False)
+missense_time_axis.get_xaxis().tick_bottom()
+missense_time_axis.get_yaxis().tick_left()
+
+missense_time_axis.set_xlabel('Appearance time, $t$')
+missense_time_axis.set_xticks(figure_utils.time_xticks)
+missense_time_axis.set_xticklabels(figure_utils.time_xticklabels)
+missense_time_axis.set_xlim([0,60000])
+missense_time_axis.set_yticklabels([])
 
 ####
 #
@@ -222,6 +237,12 @@ for var_type in observed_restricted_appearance_times.keys():
 all_ts, all_survivals = stats_utils.calculate_unnormalized_survival_from_vector(pooled_appearance_times, min_x=-1000,max_x=100000)
 
 time_axis.step(all_ts, all_survivals/all_survivals[0], color='k', label='All')
+missense_time_axis.step(all_ts, all_survivals/all_survivals[0], color='k', label='All')
+
+restricted_ts, restricted_survivals = stats_utils.calculate_unnormalized_survival_from_vector(restricted_appearance_times, min_x=-1000,max_x=100000)
+missense_time_axis.step(all_ts, restricted_survivals/restricted_survivals[0], color='k', label='All (excluding sv)',alpha=0.5)
+
+
 
 for var_type in parse_file.var_types:
  
@@ -229,7 +250,12 @@ for var_type in parse_file.var_types:
     vartype_ts, vartype_survivals = stats_utils.calculate_unnormalized_survival_from_vector(observed_appearance_times[var_type], min_x=-1000, max_x=100000)
     time_axis.step(vartype_ts, vartype_survivals/vartype_survivals[0], color=color, alpha=0.7, label=var_type)
 
+    if var_type == 'missense':
+        missense_time_axis.step(vartype_ts, vartype_survivals/vartype_survivals[0], color=color, alpha=0.7, label=var_type)
+    
+
 time_axis.legend(loc='upper right', frameon=False)
+missense_time_axis.legend(loc='upper right', frameon=False)
 
 sys.stderr.write("Saving figure...\t")
 fig.savefig(parse_file.figure_directory+'supplemental_vartype_times.pdf',bbox_inches='tight')
