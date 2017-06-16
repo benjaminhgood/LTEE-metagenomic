@@ -12,7 +12,7 @@ tmin = 0
 tmax = 60000
 
 # Output filename
-filename = parse_file.figure_directory+'extended_data_fig8.png'
+filename = parse_file.figure_directory+'extended_data_fig5.png'
 
 # Mininum coverage for frequency estimation vs interpolation 
 min_coverage = 10
@@ -47,7 +47,7 @@ def color_condition(population_idx, location, gene_name, var_type, f, L, extra_d
     #
     ###############################################################
     
-    condition = gene_name=='argR'
+    condition = gene_name=='hslU'
     
     # Examples:
     # 
