@@ -234,4 +234,30 @@ def estimate_mutation_spectrum(num_hits, weights):
     print loglikelihoods
         
             
-        
+def calculate_average_function(functions):
+    
+    x_y_map = {}
+    
+    for xs, ys in functions:
+        for x,y in zip(xs,ys):
+            if x not in x_y_map:
+                x_y_map[x] = []
+            x_y_map[x].append(y)
+    
+    xs = []
+    ytots = []
+    ns = []         
+    for x in sorted(x_y_map.keys()):
+       
+       xs.append(x)
+       ns.append(len(x_y_map[x]))
+       ytots.append(sum(x_y_map[x])*1.0)
+       
+    xs = numpy.array(xs)
+    ytots = numpy.array(ytots)
+    ns = numpy.array(ns)
+    
+    yavgs = ytots/ns
+    
+    return xs, yavgs 
+               

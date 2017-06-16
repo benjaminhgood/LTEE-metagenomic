@@ -156,5 +156,5 @@ for population_group in ['nonmutators','mutators']:
     
 nonmutator_axis.set_xticklabels([])
 sys.stderr.write("Saving figure...\t")
-fig.savefig(parse_file.figure_directory+'supplemental_allele_multiplicity.pdf',bbox_inches='tight') 
+fig.savefig(parse_file.figure_directory+'extended_data_fig4.pdf',bbox_inches='tight') 
 sys.stderr.write("Done!\n")    

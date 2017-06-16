@@ -51,7 +51,7 @@ def infer_hmm(A, D, num_iterations=10):
         
     for current_iteration in xrange(1,num_iterations+1):
     
-        sys.stderr.write("Iteration %d\n" % current_iteration)
+        #sys.stderr.write("Iteration %d\n" % current_iteration)
         
         # calculate Qs and Vs
         #sys.stderr.write("Calculating Q,V...\n")

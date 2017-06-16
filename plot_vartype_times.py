@@ -258,5 +258,5 @@ time_axis.legend(loc='upper right', frameon=False)
 missense_time_axis.legend(loc='upper right', frameon=False)
 
 sys.stderr.write("Saving figure...\t")
-fig.savefig(parse_file.figure_directory+'supplemental_vartype_times.pdf',bbox_inches='tight')
+fig.savefig(parse_file.figure_directory+'extended_data_fig2.pdf',bbox_inches='tight')
 sys.stderr.write("Done!\n")

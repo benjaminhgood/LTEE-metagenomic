@@ -1010,8 +1010,8 @@ if level=='gene':
     fig6.savefig( parse_file.figure_directory+"fig6.pdf",bbox_inches='tight')
     pooled_fig.savefig( parse_file.figure_directory+"supplemental_pooled_times.pdf", bbox_inches='tight')
     LRT_fig.savefig( parse_file.figure_directory+"supplemental_temporal_LRT.pdf",bbox_inches='tight')
-    twohit_fig.savefig( parse_file.figure_directory+"supplemental_twohit_times.pdf",bbox_inches='tight')
-    missed_opportunity_fig.savefig( parse_file.figure_directory+"supplemental_temporal_missed_opportunities.pdf",bbox_inches='tight')   
+    twohit_fig.savefig( parse_file.figure_directory+"extended_data_fig7.pdf",bbox_inches='tight')
+    missed_opportunity_fig.savefig( parse_file.figure_directory+"extended_data_fig9.pdf",bbox_inches='tight')   
     
 elif level=='operon':
 

@@ -143,7 +143,7 @@ minority_axis.set_xlim([0,60100])
 extinct_axis = plt.Subplot(fig, inner_grid_1[3])
 fig.add_subplot(extinct_axis)
 
-extinct_axis.set_title('%s extinct / unclassified' % parse_file.get_pretty_name(focal_population),loc='right',fontsize=4,y=0.91)
+extinct_axis.set_title('%s extinct' % parse_file.get_pretty_name(focal_population),loc='right',fontsize=4,y=0.91)
 
 
 extinct_axis.set_xlabel('Generation, $t$')

@@ -61,7 +61,7 @@ dnds_axis.set_ylim([0,3.5])
 dnds_axis.set_yticks([0,1,2,3,4])
 dnds_axis.set_xlim([-1,2])
 dnds_axis.set_xticks([0,1])
-dnds_axis.set_xticklabels(['Appeared','Survived'],rotation='vertical')
+dnds_axis.set_xticklabels(['All','Fixed'],rotation='vertical')
 dnds_axis.plot([-4,4],[1,1],'-',linewidth=0.25,color='0.7')
 
 dnds_axis.set_title('Naive')
@@ -78,7 +78,7 @@ targeted_dnds_axis.set_ylim([0,3.5])
 targeted_dnds_axis.set_yticks([0,1,2,3,4])
 targeted_dnds_axis.set_xlim([-1,2])
 targeted_dnds_axis.set_xticks([0,1])
-targeted_dnds_axis.set_xticklabels(['Appeared','Survived'],rotation='vertical')
+targeted_dnds_axis.set_xticklabels(['All','Fixed'],rotation='vertical')
 targeted_dnds_axis.plot([-4,4],[1,1],'-',linewidth=0.25,color='0.7')
 
 targeted_dnds_axis.set_title('Substitution specific')
@@ -141,7 +141,9 @@ for metapopulation in metapopulations:
             masked_Ls = Ls[good_idxs]
             
             t = timecourse_utils.calculate_appearance_time(masked_times, masked_freqs, masked_state_Ls, masked_Ls)
-            fixed_weight = timecourse_utils.calculate_fixed_weight(masked_state_Ls[-1], masked_freqs[-1])
+            #fixed_weight = timecourse_utils.calculate_fixed_weight(masked_state_Ls[-1], masked_freqs[-1])
+            fixed_weight = timecourse_utils.calculate_clade_fixed_weight(masked_Ls[-1], masked_freqs[-1])
+        
             
             if var_type in nonsynonymous_types or var_type in synonymous_types: 
                 targeted_Lnon[population] += (1-substitution_specific_synonymous_fraction[allele])  
@@ -182,17 +184,19 @@ for metapopulation in metapopulations:
     total_targeted_Lsyn = sum(targeted_fixed_Lsyn.values())
     targeted_dnds_fixed = total_non_fixed/total_syn_fixed*total_targeted_Lsyn/total_targeted_Lnon
     
-    population_dnds_appeared = numpy.array([non_appeared[population]/syn_appeared[population]*Lsyn/Lnon for population in populations])
+    population_dnds_appeared = numpy.array([non_appeared[population]/(syn_appeared[population]+(syn_appeared[population]==0))*Lsyn/Lnon for population in populations])
     
-    population_dnds_fixed = numpy.array([non_fixed[population]/syn_fixed[population]*Lsyn/Lnon for population in populations])
+    population_dnds_fixed = numpy.array([non_fixed[population]/(syn_fixed[population]+(syn_fixed[population]==0))*Lsyn/Lnon for population in populations])
     
     targeted_population_dnds_appeared = numpy.array([non_appeared[population]/syn_appeared[population]*targeted_Lsyn[population]/targeted_Lnon[population] for population in populations])
     
-    targeted_population_dnds_fixed = numpy.array([non_fixed[population]/syn_fixed[population]*targeted_fixed_Lsyn[population]/targeted_fixed_Lnon[population] for population in populations])
+    targeted_population_dnds_fixed = numpy.array([non_fixed[population]/(syn_fixed[population]+(syn_fixed[population]==0))*targeted_fixed_Lsyn[population]/targeted_fixed_Lnon[population] for population in populations])
     
     
     for population in populations:
         sys.stdout.write("%s: %d non, %d syn, dN/dS = %g, (dN/dS)* = %g\n" % (population, non_appeared[population], syn_appeared[population], non_appeared[population]/syn_appeared[population]*Lsyn/Lnon, non_appeared[population]/syn_appeared[population]*targeted_Lsyn[population]/targeted_Lnon[population]))
+        sys.stdout.write("%s fixed: %d non, %d syn\n" % (population, non_fixed[population], syn_fixed[population]))
+        
     sys.stdout.write("Total: %d non, %d syn, dN/dS = %g, (dN/dS)* = %g\n" % (total_non_appeared, total_syn_appeared, dnds_appeared, targeted_dnds_appeared))
         
     sys.stderr.write("Bootstrap resampling dNdS...\t")
@@ -244,5 +248,5 @@ for metapopulation in metapopulations:
    
 dnds_axis.legend(loc='upper right', frameon=False) 
 sys.stderr.write("Saving figure...\t")          
-fig.savefig(parse_file.figure_directory+'supplemental_dNdS.pdf',bbox_inches='tight')
+fig.savefig(parse_file.figure_directory+'extended_data_fig3.pdf',bbox_inches='tight')
 sys.stderr.write("Done!\n")

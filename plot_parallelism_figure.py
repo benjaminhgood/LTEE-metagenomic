@@ -46,16 +46,16 @@ parallelism_axes = {}
 #
 ##############################################################################
 
-fig5 = plt.figure(figsize=(7.2, 4.5))
+fig5 = plt.figure(figsize=(7.2, 3.8))
 
-outer_grid  = gridspec.GridSpec(2, 1, height_ratios=[2,0.9], hspace=0.20)
+outer_grid  = gridspec.GridSpec(2, 1, height_ratios=[1.8,1], hspace=0.25)
 
 inner_grid = gridspec.GridSpecFromSubplotSpec(2, 2, width_ratios=[3.4,1], height_ratios=[1,1],hspace=0.10,
                 subplot_spec=outer_grid[0], wspace=0.20) #, hspace=0.08)
 
 pfix_grid = gridspec.GridSpecFromSubplotSpec(1, 3,
-                width_ratios=[1.3,0.9,0.9],
-                wspace=0.10,
+                width_ratios=[1.1,1,1],
+                wspace=0.25,
                 subplot_spec=outer_grid[1])
 
 
@@ -163,6 +163,8 @@ nonmutator_pfix_axis.spines['right'].set_visible(False)
 nonmutator_pfix_axis.get_xaxis().tick_bottom()
 nonmutator_pfix_axis.get_yaxis().tick_left()
 nonmutator_pfix_axis.set_xlabel('Gene multiplicity, $m$')
+nonmutator_pfix_axis.set_ylabel('$\mathrm{Pr}[\mathrm{fixed}|\mathrm{detected}]$')
+nonmutator_pfix_axis.set_ylim([0,1.05])
 
 ###########
 #
@@ -178,6 +180,8 @@ mutator_pfix_axis.spines['right'].set_visible(False)
 mutator_pfix_axis.get_xaxis().tick_bottom()
 mutator_pfix_axis.get_yaxis().tick_left()
 mutator_pfix_axis.set_xlabel('Gene multiplicity, $m$')
+mutator_pfix_axis.set_ylabel('$\mathrm{Pr}[\mathrm{fixed}|\mathrm{detected}]$')
+mutator_pfix_axis.set_ylim([0,1.05])
 
 pfix_axes[True] = {'nonmutator': nonmutator_pfix_axis, 'mutator': mutator_pfix_axis}
 
@@ -551,7 +555,9 @@ for metapopulation in metapopulations:
         line.set_dashes((3,2))
         pfix_axes[include_svs][metapopulation].set_ylim([0,1.05])
         pfix_axes[include_svs][metapopulation].set_xlim([1,100])
-        pfix_axes[include_svs][metapopulation].set_yticklabels([])
+        
+        if include_svs==False:
+            pfix_axes[include_svs][metapopulation].set_yticklabels([])
         
         # "Done digitizing!"
     
@@ -570,7 +576,7 @@ for metapopulation in metapopulations:
     
         parallelism_axes[include_svs][metapopulation].step(early_predictors, (len(early_predictors)-numpy.arange(0,len(early_predictors)))*1.0/len(early_predictors), where='post',color=colors[metapopulation],alpha=0.75,label='$\leq \mathrm{Median}(t)$')
         
-        parallelism_axes[include_svs][metapopulation].loglog(theory_ms,  theory_survivals,'-',alpha=alpha,linewidth=0.5,color='0.7')
+        parallelism_axes[include_svs][metapopulation].loglog(theory_ms,  theory_survivals,'-',linewidth=0.5,color='0.7',label='Null')
     
         sys.stdout.write("Total mutations = %g\n" % len(predictors))
         sys.stdout.write("# m >= 2: %g\n" % (predictors>=2).sum())
@@ -613,11 +619,9 @@ mutator_parallelism_axis.set_xlim([1,1e02])
 
 nonmutator_pfix_axis.set_xlim([1,1e02])
 nonmutator_pfix_axis.set_ylim([0,1.05])
-nonmutator_pfix_axis.set_yticklabels([])
 
 mutator_pfix_axis.set_xlim([1,1e02])
 mutator_pfix_axis.set_ylim([0,1.05])
-mutator_pfix_axis.set_yticklabels([])
 
 nonmutator_axis.text(2000,1.9,figure_utils.get_panel_label('a'),fontsize=6,fontweight='bold')
 mutator_axis.text(2000,32.5,figure_utils.get_panel_label('b'),fontsize=6,fontweight='bold')

@@ -159,7 +159,7 @@ velocity_axis = plt.Subplot(fig2, middle_grid[0])
 fig2.add_subplot(velocity_axis)
 
 velocity_axis.set_xlabel('Generation, $t$',labelpad=2,fontsize=4)
-velocity_axis.set_ylabel('$dM / dt$ ($\\times 10^{-3}$)',labelpad=2)
+velocity_axis.set_ylabel('$dM / dt$ ($\\times 10^3$)',labelpad=2)
 
 velocity_axis.set_xlim([-1000, 61000])
 velocity_axis.set_xticks(figure_utils.time_xticks)
@@ -185,7 +185,7 @@ fixation_axis = plt.Subplot(fig2, middle_grid[1])
 
 fig2.add_subplot(fixation_axis)
 
-fixation_axis.set_xlabel('Avg # mutations, $M(t)$',labelpad=2,fontsize=4)
+fixation_axis.set_xlabel('Avg # mutations',labelpad=2,fontsize=4)
 fixation_axis.set_ylabel('  Fixed mutations',labelpad=4,rotation=270,fontsize=4)
 fixation_axis.yaxis.set_label_position("right")
 
@@ -267,10 +267,10 @@ w_mut_axis.get_yaxis().tick_left()
 #
 ##############################################################################
 
-s_fig = plt.figure(figsize=(5, 1.5))
+s_fig = plt.figure(figsize=(2, 1.5))
 
 # Set up grids to hold figure panels
-trajectory_grid = gridspec.GridSpec(1, 2, width_ratios=[2.5,1.5], wspace=0.3)
+trajectory_grid = gridspec.GridSpec(1, 1)
 
 #############################
 #
@@ -283,9 +283,9 @@ s_fig.add_subplot(s_axis)
 s_axis.set_xlabel('Generation, $t$',labelpad=2)
 s_axis.set_ylabel('Fitness per mutation, $X(t)/M(t)$ (%)',labelpad=2)
 
+s_axis.set_xlim([-1000, 61000])
 s_axis.set_xticks(figure_utils.time_xticks)
 s_axis.set_xticklabels(figure_utils.time_xticklabels)
-s_axis.set_xlim([-1000, 51000])
 
 s_axis.tick_params(axis='y', direction='out',length=3,pad=1)
 s_axis.tick_params(axis='x', direction='out',length=3,pad=1)
@@ -297,35 +297,20 @@ s_axis.spines['right'].set_visible(False)
 s_axis.get_xaxis().tick_bottom()
 s_axis.get_yaxis().tick_left()
 
-late_s_axis = plt.Subplot(s_fig, trajectory_grid[1])
-s_fig.add_subplot(late_s_axis)
-
-late_s_axis.set_xlabel('Generation interval',labelpad=2)
-late_s_axis.set_ylabel('Late gain, $\Delta X(t)/ \Delta M(t)$ (%)',labelpad=2)
-
-late_s_axis.set_xticks([45000,55000])
-late_s_axis.set_xticklabels(['40k-50k','50k-60k'])
-late_s_axis.set_xlim([41000, 59000])
-
-late_s_axis.tick_params(axis='y', direction='out',length=3,pad=1)
-late_s_axis.tick_params(axis='x', direction='out',length=3,pad=1)
-
-late_s_axis.set_ylim([0,0.8])
-
-late_s_axis.spines['top'].set_visible(False)
-late_s_axis.spines['right'].set_visible(False)
-late_s_axis.get_xaxis().tick_bottom()
-late_s_axis.get_yaxis().tick_left()
-
 ##############################################################################
 #
 # Now set up Supplemental Figure (Fitness and mutation accumulation from 40k-60k)
 #
 ##############################################################################
 
-late_fig = plt.figure(figsize=(2, 1.5))
+late_fig = plt.figure(figsize=(4.3, 1.5))
 
-late_grid = gridspec.GridSpec(2, 1, height_ratios=[0.7,1], hspace=0.05)
+# Set up grids to hold figure panels
+outer_grid = gridspec.GridSpec(1, 2, width_ratios=[1,1], wspace=0.4)
+
+late_grid = gridspec.GridSpecFromSubplotSpec(2, 1, height_ratios=[0.7,1], hspace=0.05,subplot_spec=outer_grid[0])
+
+early_grid = gridspec.GridSpecFromSubplotSpec(2, 1, height_ratios=[0.7,1], hspace=0.05,subplot_spec=outer_grid[1])
 
 late_mut_axis = plt.Subplot(late_fig, late_grid[1])
 late_fig.add_subplot(late_mut_axis)
@@ -360,6 +345,41 @@ late_fitness_axis.set_yticks([0,1,2,3,4])
 
 late_fitness_axis.set_xlim([40000,61000])
 late_fitness_axis.set_ylim([0,4.5])
+
+early_mut_axis = plt.Subplot(late_fig, early_grid[1])
+late_fig.add_subplot(early_mut_axis)
+
+early_mut_axis.set_xlabel('Generation, $t$',labelpad=2)
+early_mut_axis.set_ylabel('Mutation gain',labelpad=2)
+
+early_mut_axis.set_xlim([0, 10000])
+early_mut_axis.set_ylim([-1,32.5])
+xticks = [0,5000,10000]
+xticklabels = ['0','5k','10k']
+early_mut_axis.set_xticks(xticks)
+early_mut_axis.set_xticklabels(xticklabels)
+
+early_mut_axis.spines['top'].set_visible(False)
+early_mut_axis.spines['right'].set_visible(False)
+early_mut_axis.get_xaxis().tick_bottom()
+early_mut_axis.get_yaxis().tick_left()
+
+early_fitness_axis = plt.Subplot(late_fig, early_grid[0])
+late_fig.add_subplot(early_fitness_axis)
+
+early_fitness_axis.set_ylabel('Fitness gain\n$\Delta X$ (%)',labelpad=2)
+
+early_fitness_axis.spines['top'].set_visible(False)
+early_fitness_axis.spines['right'].set_visible(False)
+early_fitness_axis.get_xaxis().tick_bottom()
+early_fitness_axis.get_yaxis().tick_left()
+early_fitness_axis.set_xticks(xticks)
+early_fitness_axis.set_xticklabels(["" for tick in xticks])
+
+#early_fitness_axis.set_yticks([0,1,2,3,4])
+
+early_fitness_axis.set_xlim([0,10000])
+early_fitness_axis.set_ylim([0,30])
 
 
 ##############################################################################
@@ -651,6 +671,12 @@ sys.stderr.write("Calculate coarse-grained trajectories...\n")
 coarse_mutation_trajectories = {}
 dMs = []
 dMs_without_p1 = []
+
+freq_dep_idxs = []
+non_freq_dep_idxs = []
+freq_dep_idxs_without_p1 = []
+non_freq_dep_idxs_without_p1 = []
+
 for population in parse_file.complete_nonmutator_lines:
 
     coarse_dMts, coarse_dMs = coarse_slope_trajectories[population]
@@ -660,13 +686,34 @@ for population in parse_file.complete_nonmutator_lines:
     coarse_Ms = numpy.hstack([[0], coarse_dMs]).cumsum()
     coarse_mutation_trajectories[population] = (coarse_Mts, coarse_Ms)
     
+    if population in set(['p2','p4']):
+        non_freq_dep_idxs.append(True)
+        freq_dep_idxs.append(False)
+    else:
+        non_freq_dep_idxs.append(False)
+        freq_dep_idxs.append(True)
+    
     if population != 'p1':
         dMs_without_p1.append(coarse_dMs)
+        
+        
+        if population in set(['p2','p4']):
+            non_freq_dep_idxs_without_p1.append(True)
+            freq_dep_idxs_without_p1.append(False)
+        else:
+            non_freq_dep_idxs_without_p1.append(False)
+            freq_dep_idxs_without_p1.append(True)
+    
         
     dMs.append(coarse_dMs)
 
 dMs = numpy.array(dMs)
 dMs_without_p1 = numpy.array(dMs_without_p1)
+
+freq_dep_idxs = numpy.array(freq_dep_idxs)
+non_freq_dep_idxs = numpy.array(non_freq_dep_idxs)
+freq_dep_idxs_without_p1 = numpy.array(freq_dep_idxs_without_p1)
+non_freq_dep_idxs_without_p1 = numpy.array(non_freq_dep_idxs_without_p1)
 
 def sample_null_dM(dMs):
     
@@ -681,29 +728,57 @@ def sample_null_dM(dMs):
 observed_stddev = (dMs.sum(axis=1)).std()
 observed_stddev_without_p1 = (dMs_without_p1.sum(axis=1)).std()
 
+observed_freq_dep_difference = (dMs.sum(axis=1))[freq_dep_idxs].mean()-(dMs.sum(axis=1))[non_freq_dep_idxs].mean()
+
+observed_freq_dep_difference_without_p1 = (dMs_without_p1.sum(axis=1))[freq_dep_idxs_without_p1].mean()-(dMs_without_p1.sum(axis=1))[non_freq_dep_idxs_without_p1].mean()
+
+
 bootstrapped_stddevs = []
 bootstrapped_stddevs_without_p1 = []
+
+bootstrapped_freq_dep_differences = []
+bootstrapped_freq_dep_differences_without_p1 = []
+
 
 num_bootstraps = 100000
 for bootstrap_idx in xrange(2,2+num_bootstraps):
     #pylab.figure(bootstrap_idx)
     bootstrapped_dMs = sample_null_dM(dMs)
     bootstrapped_stddevs.append( (bootstrapped_dMs.sum(axis=1)).std() )
+    
+    bootstrapped_freq_dep_differences.append( (bootstrapped_dMs.sum(axis=1))[freq_dep_idxs].mean()-(bootstrapped_dMs.sum(axis=1))[non_freq_dep_idxs].mean() )
+    
     bootstrapped_dMs_without_p1 = sample_null_dM(dMs_without_p1)
     bootstrapped_stddevs_without_p1.append( (bootstrapped_dMs_without_p1.sum(axis=1)).std() )
 
+    bootstrapped_freq_dep_differences_without_p1.append( (bootstrapped_dMs_without_p1.sum(axis=1))[freq_dep_idxs_without_p1].mean()-(bootstrapped_dMs_without_p1.sum(axis=1))[non_freq_dep_idxs_without_p1].mean() )
+
 bootstrapped_stddevs.sort()
 bootstrapped_stddevs_without_p1.sort()
+bootstrapped_freq_dep_differences.sort()
+bootstrapped_freq_dep_differences_without_p1.sort()
 
 bootstrapped_stddevs = numpy.array(bootstrapped_stddevs)
 bootstrapped_stddevs_without_p1 = numpy.array(bootstrapped_stddevs_without_p1)
+bootstrapped_freq_dep_differences = numpy.array(bootstrapped_freq_dep_differences)
+bootstrapped_freq_dep_differences_without_p1 = numpy.array(bootstrapped_freq_dep_differences_without_p1)
+
+
 
 pvalue = (bootstrapped_stddevs>=observed_stddev).sum()*1.0/(len(bootstrapped_stddevs))
 
 pvalue_without_p1 = (bootstrapped_stddevs_without_p1>=observed_stddev_without_p1).sum()*1.0/(len(bootstrapped_stddevs_without_p1))
 
+freq_dep_pvalue = stats_utils.calculate_empirical_pvalue(observed_freq_dep_difference, bootstrapped_freq_dep_differences)
+
+freq_dep_pvalue_without_p1 = stats_utils.calculate_empirical_pvalue(observed_freq_dep_difference_without_p1, bootstrapped_freq_dep_differences_without_p1)
+
+
 sys.stdout.write("Rate correlation pvalue: p=%g\n" % pvalue)
 sys.stdout.write("without p1: p=%g\n" % pvalue_without_p1)
+
+sys.stdout.write("Freq dep difference: %g (p=%g)\n" % (observed_freq_dep_difference, freq_dep_pvalue))
+sys.stdout.write("without p1: %g (p=%g)\n" % (observed_freq_dep_difference_without_p1, freq_dep_pvalue_without_p1))
 
 sys.stderr.write("Done!\n")
 
@@ -770,13 +845,9 @@ for population in populations:
         for t,X,std_X in zip(late_Xts, late_Xs, late_std_Xs)[1:]:    
             late_fitness_axis.plot([t,t], [(X-std_X)*100, (X+std_X)*100], '-', color=colorVal, linewidth=0.5)
         
-        # Calculate late "avg fitness effects"
-        coarse_dMts, coarse_dMs = coarse_slope_trajectories[population]
+        early_mut_axis.plot(Mts, Ms, linestyle, color=colorVal, alpha=1, markersize=1,linewidth=0.5,zorder=zorder, markeredgewidth=0)  
         
-        late_ss = numpy.array([(late_Xs[1]-late_Xs[0])/coarse_dMs[-2], (late_Xs[2]-late_Xs[1])/coarse_dMs[-1]])
-        late_sts = numpy.array([45000,55000])+normal(numpy.array([0,0]),500)
-        
-        late_s_axis.plot(late_sts, late_ss*100, '.-', color=colorVal, markersize=3, linewidth=0.25)
+        early_fitness_axis.plot(Xts, Xs*100, linestyle, color=colorVal, markersize=1, linewidth=0.5,zorder=zorder, markeredgewidth=0)
         
           
         coarse_Mts, coarse_Ms = coarse_mutation_trajectories[population]
@@ -841,27 +912,6 @@ avg_ss = numpy.array(avg_ss)
 s_axis.plot(avg_sts[1:], avg_ss[1:]*100,'k-',linewidth=2,zorder=13)
 s_axis.plot(avg_sts[1:], avg_ss[1:]*100,'w-',linewidth=1,zorder=14)
 
-avg_late_sts = numpy.array([45000,55000])
-avg_late_dXs = numpy.array([0.0,0.0])
-avg_late_dMs = numpy.array([0.0,0.0])
-
-for population in parse_file.complete_nonmutator_lines:
-    late_Xts, late_Xs, late_std_Xs = late_fitness_trajectories[population]
-       
-    avg_late_dXs[0] += (late_Xs[1]-late_Xs[0])     
-    avg_late_dXs[1] += (late_Xs[2]-late_Xs[1])     
-    
-    coarse_dMts, coarse_dMs = coarse_slope_trajectories[population]
-        
-    avg_late_dMs[0] += coarse_dMs[-2]
-    avg_late_dMs[1] += coarse_dMs[-1]
-
-avg_late_ss = avg_late_dXs/avg_late_dMs
-        
-late_s_axis.plot(avg_late_sts, avg_late_ss*100,'k-',linewidth=2,zorder=13)
-late_s_axis.plot(avg_late_sts, avg_late_ss*100,'w-',linewidth=1,zorder=14)
-    
-
 ###
 #
 # Rate correlation pvalue
@@ -895,9 +945,11 @@ sys.stderr.write("Saving figures...\t")
 fig2.savefig(parse_file.figure_directory+'fig2.pdf',bbox_inches='tight',transparent=True)
 w_fig.savefig(parse_file.figure_directory+'supplemental_w_comparison.pdf',bbox_inches='tight',transparent=True)
 s_fig.savefig(parse_file.figure_directory+'supplemental_fitness_per_mutation.pdf',bbox_inches='tight',transparent=True)
+s_fig.savefig(parse_file.figure_directory+'supplemental_fitness_per_mutation.png',bbox_inches='tight',transparent=True,dpi=300)
 
 late_fig.savefig(parse_file.figure_directory+'supplemental_late_rate_comparison.pdf',bbox_inches='tight',transparent=True)
-correlation_fig.savefig(parse_file.figure_directory+'extended_data_fig1.pdf',bbox_inches='tight',transparent=True)
+late_fig.savefig(parse_file.figure_directory+'supplemental_late_rate_comparison.png',bbox_inches='tight',transparent=True,dpi=300)
+correlation_fig.savefig(parse_file.figure_directory+'supplemental_rate_correlation.pdf',bbox_inches='tight',transparent=True)
 mutator_fixation_fig.savefig(parse_file.figure_directory+'supplemental_mutator_fixation.pdf',bbox_inches='tight',transparent=True)
 transit_time_fig.savefig(parse_file.figure_directory+'supplemental_well_mixed_transit_times.pdf',bbox_inches='tight',transparent=True)
 
