@@ -64,7 +64,7 @@ dnds_axis.set_xticks([0,1])
 dnds_axis.set_xticklabels(['All','Fixed'],rotation='vertical')
 dnds_axis.plot([-4,4],[1,1],'-',linewidth=0.25,color='0.7')
 
-dnds_axis.set_title('Naive')
+#dnds_axis.set_title('Naive')
 
 targeted_dnds_axis = plt.Subplot(fig, grid[1])
 fig.add_subplot(targeted_dnds_axis)
@@ -81,7 +81,11 @@ targeted_dnds_axis.set_xticks([0,1])
 targeted_dnds_axis.set_xticklabels(['All','Fixed'],rotation='vertical')
 targeted_dnds_axis.plot([-4,4],[1,1],'-',linewidth=0.25,color='0.7')
 
-targeted_dnds_axis.set_title('Substitution specific')
+#targeted_dnds_axis.set_title('Substitution specific')
+
+dnds_axis.text(-0.8,3.8,figure_utils.get_panel_label('a'),fontsize=6,fontweight='bold')
+targeted_dnds_axis.text(-0.8,3.8,figure_utils.get_panel_label('b'),fontsize=6,fontweight='bold')
+
 ####
 #
 # Do calculation
@@ -246,7 +250,7 @@ for metapopulation in metapopulations:
     targeted_dnds_axis.plot( numpy.ones_like(targeted_population_dnds_appeared)*(metapopulation_offsets[metapopulation]+bar_width/2)+normal(0,bar_width/2*0.3*numpy.ones_like(targeted_population_dnds_appeared)),targeted_population_dnds_appeared,'.',color=metapopulation_colors[metapopulation],alpha=0.5)
     targeted_dnds_axis.plot( numpy.ones_like(targeted_population_dnds_fixed)*(metapopulation_offsets[metapopulation]+bar_width/2+1)+normal(0,bar_width/2*0.3*numpy.ones_like(targeted_population_dnds_fixed)),targeted_population_dnds_fixed,'.',color=metapopulation_colors[metapopulation],alpha=0.5)
    
-dnds_axis.legend(loc='upper right', frameon=False) 
+dnds_axis.legend(loc='upper right', frameon=False, numpoints=1) 
 sys.stderr.write("Saving figure...\t")          
-fig.savefig(parse_file.figure_directory+'extended_data_fig3.pdf',bbox_inches='tight')
+fig.savefig(parse_file.figure_directory+'extended_data_fig2.pdf',bbox_inches='tight')
 sys.stderr.write("Done!\n")

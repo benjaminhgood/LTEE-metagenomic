@@ -25,7 +25,7 @@ debug=False
 remove_data_for_copyediting = False
 
 
-focal_population = 'm6'
+focal_population = 'm2'
 #focal_population = 'p5'
 #focal_population = 'm4'
 #focal_population = 'm5'
@@ -350,9 +350,9 @@ fixed_axis.text(1000, 1.05, figure_utils.get_panel_label('a'),fontsize=6,fontwei
 remaining_axes[0].text(0, 1.15, figure_utils.get_panel_label('b'),fontsize=6,fontweight='bold')
 
 if remove_data_for_copyediting:
-    figure_name = 'fig3_nodata'
+    figure_name = 'supplemental_m2_clades'
 else:
-    figure_name = 'fig3'
+    figure_name = 'supplemental_m2_clades'
  
 
 sys.stderr.write("Saving final PNG image...\t")

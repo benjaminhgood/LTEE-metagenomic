@@ -157,7 +157,7 @@ for population_idx in xrange(0,len(populations)):
             # One of the non-colored ones
             #freq_axis.plot(theory_times, interpolation_function(theory_times), '-', alpha=0.5, color='0.7', markersize=3,linewidth=1,zorder=1)
             
-            freq_axis.plot(masked_times, masked_freqs, '-', color='0.7', alpha=0.5, markersize=3,label=gene_name,linewidth=1,zorder=1)
+            freq_axis.plot(masked_times, masked_freqs, '-', color='0.7', alpha=0.5, markersize=3,label=gene_name,linewidth=1,zorder=1) #, rasterized=True)
      
     sys.stderr.write("Colored=%d, Total=%d\n" % (num_colored_mutations, num_total_mutations))
     
@@ -176,7 +176,7 @@ freq_axis.set_ylim([0,1.02])
 freq_axis.set_xlim([tmin,tmax])   
  
 sys.stderr.write("Saving final PNG image...\t")
-fig.savefig(filename, bbox_inches='tight', dpi=300, transparent=True)
+fig.savefig(filename, bbox_inches='tight')
 pylab.close(fig)
 sys.stderr.write("Done!\n")
 

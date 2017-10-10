@@ -27,6 +27,16 @@ mpl.rcParams['font.size'] = 5
 mpl.rcParams['lines.linewidth'] = 1.0
 mpl.rcParams['legend.frameon']  = False
 mpl.rcParams['legend.fontsize']  = 'small'
+mpl.rcParams['axes.labelpad'] = 2
+mpl.rcParams['pdf.fonttype'] = 42
+mpl.rcParams['font.sans-serif'] = 'Arial'
+
+mpl.rcParams['font.serif'] = 'Times New Roman'
+mpl.rcParams['mathtext.rm'] = 'serif'
+mpl.rcParams['mathtext.it'] = 'serif:italic'
+mpl.rcParams['mathtext.bf'] = 'serif:bold'
+mpl.rcParams['mathtext.fontset'] = 'custom'
+
 
 populations = parse_file.complete_nonmutator_lines + parse_file.mutator_lines
 
@@ -42,16 +52,23 @@ populations = parse_file.complete_nonmutator_lines + parse_file.mutator_lines
 #
 ##############################################################################
 
-fig2 = plt.figure(figsize=(5, 2))
+
+#fig2 = plt.figure(figsize=(4.72441, 1.889764))
+#fig2 = plt.figure(figsize=(3.54, 1.42))
+fig2 = plt.figure(figsize=(3.98, 1.55))
+
 
 # Set up grids to hold figure panels
-outer_grid = gridspec.GridSpec(1, 3, width_ratios=[0.95, 0.55, 0.05], wspace=0.43)
+outer_grid = gridspec.GridSpec(1, 2, width_ratios=[0.8, 0.9], wspace=0.25)
 
 trajectory_grid = gridspec.GridSpecFromSubplotSpec(2, 1, height_ratios=[0.4,1],
                 subplot_spec=outer_grid[0], hspace=0.05) #, hspace=0.08)
 
+right_grid = gridspec.GridSpecFromSubplotSpec(1, 2, width_ratios=[0.6,0.25],
+                subplot_spec=outer_grid[1], wspace=0.10)
+
 middle_grid = gridspec.GridSpecFromSubplotSpec(2, 1, height_ratios=[0.6,1],
-                subplot_spec=outer_grid[1], hspace=0.5)
+                subplot_spec=right_grid[0], hspace=0.55)
 
 ###################
 #
@@ -59,7 +76,7 @@ middle_grid = gridspec.GridSpecFromSubplotSpec(2, 1, height_ratios=[0.6,1],
 #
 ###################
 
-legend_axis = plt.Subplot(fig2, outer_grid[2])
+legend_axis = plt.Subplot(fig2, right_grid[1])
 fig2.add_subplot(legend_axis)
 
 legend_axis.set_ylim([0,1])
@@ -82,7 +99,7 @@ legend_axis.set_yticks([])
 fitness_axis = plt.Subplot(fig2, trajectory_grid[0])
 fig2.add_subplot(fitness_axis)
 
-fitness_axis.set_ylabel('Fitness, $X(t)$ (%)',labelpad=2)
+fitness_axis.set_ylabel('Fitness (%)',labelpad=2)
 fitness_axis.set_ylim([0,45])
 
 fitness_axis.spines['top'].set_visible(False)
@@ -99,7 +116,6 @@ mut_axis = plt.Subplot(fig2, trajectory_grid[1])
 fig2.add_subplot(mut_axis)
 
 mut_axis.set_xlabel('Generation, $t$',labelpad=2)
-mut_axis.set_ylabel('Avg # mutations, $M(t)$',labelpad=2)
 
 mut_axis.set_xlim([-1000, 61000])
 mut_axis.set_xticks(figure_utils.time_xticks)
@@ -110,12 +126,11 @@ fitness_axis.set_xticklabels(["" for label in figure_utils.time_xticklabels])
 fitness_axis.set_xlim([-1000,61000])
 fitness_axis.set_yticks([0,10,20,30,40])
 
-fitness_axis.tick_params(axis='y', direction='out',length=3,pad=1)
+fitness_axis.tick_params(axis='y', direction='out',length=3,pad=1,labelsize=5)
 
-mut_axis.tick_params(axis='y', direction='out',length=3,pad=1)
-mut_axis.tick_params(axis='x', direction='out',length=3,pad=1)
 
-mut_axis.set_ylim([0,119])
+
+mut_axis.set_ylim([0,115])
 
 mut_axis.spines['right'].set_visible(False)
 mut_axis.get_xaxis().tick_bottom()
@@ -133,22 +148,32 @@ mutator_mut_axis = inset_axes(mut_axis, width="23%", height="23%", borderpad=0, 
 #-0.025
 
 mutator_mut_axis.set_xlim([-1000,61000])
-mutator_mut_axis.set_xticks([0,20000,40000,60000])
-mutator_mut_axis.set_xticklabels(['0','20k','40k','60k'])
+mutator_mut_axis.set_xticks([0,60000])
+mutator_mut_axis.set_xticklabels(['0','60k'])
 mutator_mut_axis.set_ylim([0,3000])      
-mutator_mut_axis.set_yticks([0,1000,2000,3000])
-mutator_mut_axis.set_yticklabels(['0','1k','2k','3k'])
+mutator_mut_axis.set_yticks([0,3000])
+mutator_mut_axis.set_yticklabels(['0','3k'])
+
+mutator_mut_axis.tick_params(axis='y',length=3,pad=1,labelsize=5)
+mutator_mut_axis.tick_params(axis='x', length=3,pad=1,labelsize=5)
 
 mutator_mut_axis.fill_between(numpy.array([0,61000]),numpy.array([0,0]), numpy.array([3000,3000]),color='w',zorder=20)
 
+
     
 cl = pylab.getp(mutator_mut_axis, 'xmajorticklabels')
-pylab.setp(cl, fontsize=4) 
+pylab.setp(cl, fontsize=5) 
 cl = pylab.getp(mutator_mut_axis, 'ymajorticklabels')
-pylab.setp(cl, fontsize=4) 
+pylab.setp(cl, fontsize=5) 
 mutator_mut_axis.get_yaxis().tick_left()
 mutator_mut_axis.get_xaxis().tick_bottom()
 [i.set_linewidth(0.75) for i in mutator_mut_axis.spines.itervalues()]
+
+# Moved these down so that it will work better?
+mut_axis.tick_params(axis='y', direction='out',length=3,pad=1,labelsize=5)
+mut_axis.tick_params(axis='x', direction='out',length=3,pad=1,labelsize=5)
+mut_axis.set_ylabel('Mutations, $M(t)$   ',labelpad=-2)
+
 
 #############################
 #
@@ -158,12 +183,12 @@ mutator_mut_axis.get_xaxis().tick_bottom()
 velocity_axis = plt.Subplot(fig2, middle_grid[0])
 fig2.add_subplot(velocity_axis)
 
-velocity_axis.set_xlabel('Generation, $t$',labelpad=2,fontsize=4)
+velocity_axis.set_xlabel('Generation, $t$',labelpad=2)
 velocity_axis.set_ylabel('$dM / dt$ ($\\times 10^{-3}$)',labelpad=2)
 
 velocity_axis.set_xlim([-1000, 61000])
-velocity_axis.set_xticks(figure_utils.time_xticks)
-velocity_axis.set_xticklabels(figure_utils.time_xticklabels)
+velocity_axis.set_xticks(figure_utils.small_time_xticks)
+velocity_axis.set_xticklabels(figure_utils.small_time_xticklabels)
 velocity_axis.set_yticks([0,1,2,3])
 velocity_axis.set_ylim([0,3.5])
 
@@ -172,8 +197,8 @@ velocity_axis.spines['right'].set_visible(False)
 velocity_axis.get_xaxis().tick_bottom()
 velocity_axis.get_yaxis().tick_left()
 
-velocity_axis.tick_params(axis='y', direction='out',length=3,pad=1,labelsize=4)
-velocity_axis.tick_params(axis='x', direction='out',length=3,pad=1,labelsize=4)
+velocity_axis.tick_params(axis='y', direction='out',length=3,pad=1,labelsize=5)
+velocity_axis.tick_params(axis='x', direction='out',length=3,pad=1,labelsize=5)
 
 #############################
 #
@@ -185,23 +210,26 @@ fixation_axis = plt.Subplot(fig2, middle_grid[1])
 
 fig2.add_subplot(fixation_axis)
 
-fixation_axis.set_xlabel('Avg # mutations, $M(t)$',labelpad=2,fontsize=4)
-fixation_axis.set_ylabel('  Fixed mutations',labelpad=4,rotation=270,fontsize=4)
-fixation_axis.yaxis.set_label_position("right")
+fixation_axis.set_xlabel('Mutations, $M(t)$',labelpad=2,fontsize=5)
+fixation_axis.set_ylabel('Fixed mutations',labelpad=1,fontsize=5)
+
+#fixation_axis.set_ylabel('  Fixed mutations',labelpad=4,rotation=270,fontsize=5)
+#fixation_axis.yaxis.set_label_position("right")
 
 fixation_axis.set_ylim([0,115])
 fixation_axis.set_xlim([0,115])
 
 fixation_axis.spines['top'].set_visible(False)
-fixation_axis.spines['left'].set_visible(False)
+fixation_axis.spines['right'].set_visible(False)
 
 fixation_axis.get_xaxis().tick_bottom()
-fixation_axis.get_yaxis().tick_right()
+fixation_axis.get_yaxis().tick_left()
 
-fixation_axis.tick_params(axis='y', direction='out',length=3,pad=1,labelsize=4)
-fixation_axis.tick_params(axis='x', direction='out',length=3,pad=1,labelsize=4)
+fixation_axis.tick_params(axis='y',pad=1,length=3,labelsize=5)
 
-fixation_axis.plot([0,115],[0,115],'-',linewidth=0.5)
+fixation_axis.tick_params(axis='x', direction='out',length=3, pad=1, labelsize=5)
+
+fixation_axis.plot([0,115],[0,115],'-',linewidth=0.25,color='0.7')
 
 ##############################################################################
 #
@@ -400,6 +428,10 @@ correlation_pvalue_axis.spines['right'].set_visible(False)
 correlation_pvalue_axis.get_xaxis().tick_bottom()
 correlation_pvalue_axis.get_yaxis().tick_left()
 #correlation_pvalue_axis.set_xticks([])
+
+correlation_mut_axis.text(1000,120,figure_utils.get_panel_label('a'),fontsize=6,fontweight='bold')
+correlation_pvalue_axis.text(0.5,3,figure_utils.get_panel_label('b'),fontsize=6,fontweight='bold')
+
 
 ##############################################################################
 #
@@ -801,7 +833,7 @@ for population in populations:
     mut_axis.plot(Mts, Ms, linestyle, color=colorVal, alpha=1, markersize=1,linewidth=0.5,zorder=zorder, markeredgewidth=0)      
     w_mut_axis.plot(Mts, Ms, linestyle, color=colorVal, alpha=1, markersize=1,linewidth=0.5,zorder=zorder, markeredgewidth=0)      
     
-    legend_axis.plot([-2,-1],[-2,-1],linestyle,color=colorVal,alpha=1,markersize=2,linewidth=0.5,markeredgewidth=0,label=parse_file.get_pretty_name(population))
+    legend_axis.plot([-2,-1],[-2,-1],linestyle,color=colorVal,alpha=1,markersize=2,linewidth=0.5,markeredgewidth=0,label=figure_utils.get_short_pretty_name(population))
     
     # inset
     mutator_mut_axis.plot(Mts, Ms, '-', color=colorVal, alpha=1,markersize=2,linewidth=0.5,zorder=50+zorder)
@@ -816,7 +848,7 @@ w_mut_axis.plot(avg_Mts, avg_Ms,'w-',linewidth=1,zorder=14)
 velocity_axis.fill_between(avg_dMts,lower_dMs,upper_dMs,facecolor='0.8',linewidth=0.3,edgecolor='0.7')
 velocity_axis.plot(avg_dMts,avg_dMs,'w-',linewidth=1,zorder=14,path_effects=[pe.Stroke(linewidth=2, foreground='k'), pe.Normal()],label='$\\Delta t = 5k$')
 
-legend_axis.legend(loc='upper center',frameon=False,fontsize=4,numpoints=1,ncol=1,handlelength=1)   
+legend_axis.legend(loc='upper center',frameon=False,fontsize=5,numpoints=1,ncol=1,handlelength=1)   
 
 transit_time_axis.semilogy([-1,1])
 transit_time_axis.set_xlim([0,60000])
@@ -894,10 +926,10 @@ fixation_axis.text(6, 101, figure_utils.get_panel_label('d'), fontsize=6, fontwe
 sys.stderr.write("Saving figures...\t")
 fig2.savefig(parse_file.figure_directory+'fig2.pdf',bbox_inches='tight',transparent=True)
 w_fig.savefig(parse_file.figure_directory+'supplemental_w_comparison.pdf',bbox_inches='tight',transparent=True)
-s_fig.savefig(parse_file.figure_directory+'supplemental_fitness_per_mutation.pdf',bbox_inches='tight',transparent=True)
-
+s_fig.savefig(parse_file.figure_directory+'supplemental_fitness_per_mutation.pdf',bbox_inches='tight',dpi=300)
 late_fig.savefig(parse_file.figure_directory+'supplemental_late_rate_comparison.pdf',bbox_inches='tight',transparent=True)
 correlation_fig.savefig(parse_file.figure_directory+'extended_data_fig1.pdf',bbox_inches='tight',transparent=True)
+
 mutator_fixation_fig.savefig(parse_file.figure_directory+'supplemental_mutator_fixation.pdf',bbox_inches='tight',transparent=True)
 transit_time_fig.savefig(parse_file.figure_directory+'supplemental_well_mixed_transit_times.pdf',bbox_inches='tight',transparent=True)
 

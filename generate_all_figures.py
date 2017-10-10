@@ -67,13 +67,6 @@ if return_val==0:
 else:
     sys.stdout.write("Error w/ w/ Supplemental dNdS!\n")
 
-sys.stdout.write("Plotting Supplemental vartype times\n")
-return_val = os.system('python plot_vartype_times.py')
-if return_val==0:
-    sys.stdout.write("Done w/ var_type times!\n\n")
-else:
-    sys.stdout.write("Error w/ var_type times!\n\n")
-
 sys.stdout.write("Plotting Supplemental site multiplicity\n")
 return_val = os.system('python plot_allele_multiplicity.py')
 if return_val==0:

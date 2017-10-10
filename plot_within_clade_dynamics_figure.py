@@ -28,6 +28,15 @@ mpl.rcParams['font.size'] = 5.0
 mpl.rcParams['lines.linewidth'] = 1.0
 mpl.rcParams['legend.frameon']  = False
 mpl.rcParams['legend.fontsize']  = 'small'
+mpl.rcParams['axes.labelpad'] = 2
+mpl.rcParams['pdf.fonttype'] = 42
+mpl.rcParams['font.sans-serif'] = 'Arial'
+
+mpl.rcParams['font.serif'] = 'Times New Roman'
+mpl.rcParams['mathtext.rm'] = 'serif'
+mpl.rcParams['mathtext.it'] = 'serif:italic'
+mpl.rcParams['mathtext.bf'] = 'serif:bold'
+mpl.rcParams['mathtext.fontset'] = 'custom'
 
 ###########################################
 # Set up figures
@@ -39,8 +48,9 @@ mpl.rcParams['legend.fontsize']  = 'small'
 #
 ##############################################################################
 
-fig = plt.figure(figsize=(5, 2.75))
-
+#fig = plt.figure(figsize=(5, 2.75))
+#fig = plt.figure(figsize=(3.54,1.85))
+fig = plt.figure(figsize=(3.88,2.07))
 
 # make three panels panels
 outer_grid  = gridspec.GridSpec(1, 2, width_ratios=[1,1], wspace=0.30)
@@ -69,8 +79,8 @@ pfix_axis.spines['top'].set_visible(False)
 pfix_axis.spines['right'].set_visible(False)
 pfix_axis.get_xaxis().tick_bottom()
 pfix_axis.get_yaxis().tick_left()
-pfix_axis.get_yaxis().set_tick_params(direction='out')
-pfix_axis.get_xaxis().set_tick_params(direction='out')
+pfix_axis.get_yaxis().set_tick_params(direction='out',length=3,pad=1)
+pfix_axis.get_xaxis().set_tick_params(direction='out',length=3,pad=1)
 
 pfix_axis.set_xticks(frequency_xticks)
 pfix_axis.set_xticklabels([])
@@ -92,8 +102,8 @@ pooled_pfix_axis.spines['top'].set_visible(False)
 pooled_pfix_axis.spines['right'].set_visible(False)
 pooled_pfix_axis.get_xaxis().tick_bottom()
 pooled_pfix_axis.get_yaxis().tick_left()
-pooled_pfix_axis.get_yaxis().set_tick_params(direction='out')
-pooled_pfix_axis.get_xaxis().set_tick_params(direction='out')
+pooled_pfix_axis.get_yaxis().set_tick_params(direction='out',length=3,pad=1)
+pooled_pfix_axis.get_xaxis().set_tick_params(direction='out',length=3,pad=1)
 
 pooled_pfix_axis.set_xticks(frequency_xticks)
 pooled_pfix_axis.set_xlim([0,1.05])
@@ -112,15 +122,15 @@ line.set_dashes((2,1))
 fixation_trajectory_axis = plt.Subplot(fig, inner_grid_2[0])
 fig.add_subplot(fixation_trajectory_axis)
 
-fixation_trajectory_axis.set_ylabel('Fixed mutations (major clade)')
+fixation_trajectory_axis.set_ylabel('Fixed mutations   \n(major clade)   ',labelpad=-1)
 #fixation_trajectory_axis.set_xlabel('Generation')
 
 fixation_trajectory_axis.spines['top'].set_visible(False)
 fixation_trajectory_axis.spines['right'].set_visible(False)
 fixation_trajectory_axis.get_xaxis().tick_bottom()
 fixation_trajectory_axis.get_yaxis().tick_left()
-fixation_trajectory_axis.get_yaxis().set_tick_params(direction='out')
-fixation_trajectory_axis.get_xaxis().set_tick_params(direction='out')
+fixation_trajectory_axis.get_yaxis().set_tick_params(direction='out',length=3,pad=1)
+fixation_trajectory_axis.get_xaxis().set_tick_params(direction='out',length=3,pad=1)
 
 fixation_trajectory_axis.set_xlim([-1000,61000])
 fixation_trajectory_axis.set_ylim([0,110])
@@ -141,15 +151,15 @@ fixation_trajectory_axis.set_xticklabels(xticklabels)
 fixation_time_axis = plt.Subplot(fig, inner_grid_2[1])
 fig.add_subplot(fixation_time_axis)
 
-fixation_time_axis.set_ylabel('Transit time')
-fixation_time_axis.set_xlabel('Generation')
+fixation_time_axis.set_ylabel('Transit time\n(within clade)',labelpad=-1)
+fixation_time_axis.set_xlabel('Generation, $t$')
 
 #fixation_time_axis.spines['top'].set_visible(False)
 fixation_time_axis.spines['right'].set_visible(False)
 fixation_time_axis.get_xaxis().tick_bottom()
 fixation_time_axis.get_yaxis().tick_left()
-fixation_time_axis.get_yaxis().set_tick_params(direction='out')
-fixation_time_axis.get_xaxis().set_tick_params(direction='out')
+fixation_time_axis.get_yaxis().set_tick_params(direction='out',length=3,pad=1)
+fixation_time_axis.get_xaxis().set_tick_params(direction='out',length=3,pad=1)
 
 fixation_time_axis.set_xlim([-1000,61000])
 fixation_time_axis.set_ylim([0,10000])
@@ -353,17 +363,23 @@ pooled_pfix_axis.plot(frequencies, late_nonmutator_avg_f,'-',color=nonmutator_co
 pooled_pfix_axis.plot(frequencies, nonmutator_avg_f,'-',color=nonmutator_color,linewidth=0.5,markersize=1)
 
 # set up legends (offscreen)
+pfix_axis.legend(loc='lower right',frameon=False,fontsize=5,numpoints=1,handlelength=1)   
 
-pooled_pfix_axis.plot([-2,-1],[-2,-1], '-', color=nonmutator_color, label='Wildtype (all)',markersize=1,markeredgewidth=0,linewidth=0.5)
 
-pooled_pfix_axis.plot([-2,-1],[-2,-1] ,'-', color=nonmutator_color, label='Wildtype (>20k)',markersize=1,markeredgewidth=0,alpha=0.5,linewidth=0.5)
+nonmutator_label_line, = pooled_pfix_axis.plot([-2,-1],[-2,-1], '-', color=nonmutator_color, label='Nonmutators',markersize=1,markeredgewidth=0,linewidth=0.5)
 
-pooled_pfix_axis.plot([-2,-1],[-2,-1],'-', color=mutator_color, label='Mutator (all)',markersize=1,markeredgewidth=0,linewidth=0.5)
+mutator_label_line, = pooled_pfix_axis.plot([-2,-1],[-2,-1],'-', color=mutator_color, label='Mutators',markersize=1,markeredgewidth=0,linewidth=0.5)
 
-pooled_pfix_axis.plot([-2,-1],[-2,-1],'-', color=mutator_color, markersize=1,markeredgewidth=0,alpha=0.5,linewidth=0.5, label='Mutator (>20k)')
+all_label_line, = pooled_pfix_axis.plot([-2,-1],[-2,-1] ,'-', color='k', label='All',markersize=1,markeredgewidth=0,linewidth=0.5)
 
-pfix_axis.legend(loc='lower right',frameon=False,fontsize=4,numpoints=1)   
-pooled_pfix_axis.legend(loc='lower right',frameon=False,fontsize=4,numpoints=1)   
+late_label_line, = pooled_pfix_axis.plot([-2,-1],[-2,-1] ,'-', color='k', label='>20k',markersize=1,markeredgewidth=0,alpha=0.25,linewidth=0.5)
+
+legend1 = pooled_pfix_axis.legend([nonmutator_label_line, mutator_label_line], ["Nonmutators", "Mutators"], loc="lower right",fontsize=5)
+legend2 = pooled_pfix_axis.legend([all_label_line, late_label_line], ['All $t$','>20k'], loc='upper left',fontsize=5)
+pooled_pfix_axis.add_artist(legend1)
+pooled_pfix_axis.add_artist(legend2)
+
+#pooled_pfix_axis.legend(loc='lower right',frameon=False,fontsize=5,numpoints=1,handlelength=1)   
 
 
 ############
@@ -472,8 +488,8 @@ fixation_trajectory_axis.plot(theory_times, avg_Mfixeds, 'w-' ,linewidth=1,path_
 
 fixation_trajectory_axis.text(1500, 95, figure_utils.get_panel_label('a'),fontsize=6,fontweight='bold')
 fixation_time_axis.text(1500, 9000, figure_utils.get_panel_label('b'), fontsize=6, fontweight='bold')
-pfix_axis.text(0.05, 0.9, figure_utils.get_panel_label('c'), fontsize=6, fontweight='bold')
-pooled_pfix_axis.text(0.05, 0.9, figure_utils.get_panel_label('d'), fontsize=6, fontweight='bold')
+pfix_axis.text(0.05, 0.90, figure_utils.get_panel_label('c'), fontsize=6, fontweight='bold')
+pooled_pfix_axis.text(0.05, 1.01, figure_utils.get_panel_label('d'), fontsize=6, fontweight='bold')
 
 ############
 #

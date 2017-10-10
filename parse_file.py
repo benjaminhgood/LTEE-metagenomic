@@ -1299,6 +1299,7 @@ def parse_40k_50k_fitnesses(filename="additional_data/All.Hands.Concatenated.Dat
             x_array = numpy.array(new_line_data[line][0][ts[i]]) 
             xs[i] = x_array.mean()
             std_xs[i] = x_array.std()/(len(x_array)**0.5)
+            #print len(x_array)
         trajectories[line] = [ts,xs,std_xs]
         
     return trajectories

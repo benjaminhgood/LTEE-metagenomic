@@ -19,6 +19,8 @@ import CBcm
 import figure_utils
 import stats_utils
 
+debug=False
+
 if len(sys.argv) > 1:
     level = sys.argv[1]
 else:
@@ -37,6 +39,15 @@ mpl.rcParams['font.size'] = 5.0
 mpl.rcParams['lines.linewidth'] = 1.0
 mpl.rcParams['legend.frameon']  = False
 mpl.rcParams['legend.fontsize']  = 'small'
+mpl.rcParams['axes.labelpad'] = 2
+mpl.rcParams['pdf.fonttype'] = 42
+mpl.rcParams['font.sans-serif'] = 'Arial'
+mpl.rcParams['font.serif'] = 'Times New Roman'
+mpl.rcParams['mathtext.rm'] = 'serif'
+mpl.rcParams['mathtext.it'] = 'serif:italic'
+mpl.rcParams['mathtext.bf'] = 'serif:bold'
+mpl.rcParams['mathtext.fontset'] = 'custom'
+
 
 ####################
 #
@@ -44,16 +55,15 @@ mpl.rcParams['legend.fontsize']  = 'small'
 #
 ####################
 
-fig6 = plt.figure(figsize=(7.2, 4.5))
+#fig6 = plt.figure(figsize=(7.2, 4.5))
+#fig6 = plt.figure(figsize=(7.08, 4.2))
+fig6 = plt.figure(figsize=(8.5,2.7))
+outer_grid  = gridspec.GridSpec(2, 1, height_ratios=[1.4,1], hspace=0.1)
 
-outer_grid  = gridspec.GridSpec(2, 1, height_ratios=[1,1], hspace=0.05)
-
-lower_grid = gridspec.GridSpecFromSubplotSpec(2,1,height_ratios=[0.9,1],hspace=0.3, subplot_spec=outer_grid[1])
-
-matrix_grid = gridspec.GridSpecFromSubplotSpec(1, 4,
-                width_ratios=[1,1,1,0.05],
-                wspace=0.1,
-                subplot_spec=lower_grid[1])
+matrix_grid = gridspec.GridSpecFromSubplotSpec(1, 6,
+                width_ratios=[0.02,1,1,1,0.05,0.05],
+                wspace=0.25,
+                subplot_spec=outer_grid[1])
 
 #####
 #
@@ -63,12 +73,12 @@ matrix_grid = gridspec.GridSpecFromSubplotSpec(1, 4,
 
 time_axis = plt.Subplot(fig6, outer_grid[0])
 fig6.add_subplot(time_axis)
-time_axis.set_ylabel('Appearance time')
+time_axis.set_ylabel('Appearance time',labelpad=3)
 
 time_axis.get_xaxis().tick_top()
 time_axis.get_yaxis().tick_left()
-time_axis.get_yaxis().set_tick_params(direction='out')
-time_axis.get_xaxis().set_tick_params(direction='out')
+time_axis.get_yaxis().set_tick_params(direction='out',length=3,pad=1)
+time_axis.get_xaxis().set_tick_params(direction='out',length=3,pad=1)
 
 time_axis.set_ylim([-2000,62000])
 time_axis.set_yticks(figure_utils.time_xticks)
@@ -80,39 +90,23 @@ time_cmap = CBcm.CB2cm['redblue']
 time_cNorm  = colors.Normalize(vmin=time_vmin, vmax=time_vmax)
 time_scalarMap = cmx.ScalarMappable(norm=time_cNorm, cmap=time_cmap)
 
-#####
-#
-# Mutation spectrum panel
-#
-#####
-
-probability_axis = plt.Subplot(fig6, lower_grid[0])
-fig6.add_subplot(probability_axis)
-probability_axis.set_ylabel('Relative weight (%)')
-
-probability_axis.spines['top'].set_visible(False)
-probability_axis.spines['right'].set_visible(False)
-probability_axis.get_xaxis().tick_bottom()
-probability_axis.get_yaxis().tick_left()
-probability_axis.get_yaxis().set_tick_params(direction='out')
-
-
-#probability_axis.set_yticks(numpy.arange(0,5))
 
 ######
 #
 # Dispersion matrix panels
 #
 ######
-all_matrix_axis = plt.Subplot(fig6, matrix_grid[0])
+all_matrix_axis = plt.Subplot(fig6, matrix_grid[1])
 fig6.add_subplot(all_matrix_axis)
 
 all_matrix_axis.set_yticks([0.5,1.5,2.5,3.5,4.5])
 all_matrix_axis.set_yticklabels(['6+','5','4','3','2'])
+all_matrix_axis.get_yaxis().set_tick_params(pad=4)
+
 all_matrix_axis.set_xticks([0.5,1.5,2.5,3.5,4.5,5.5])
 all_matrix_axis.set_xticklabels(['1','2','3','4','5','6'])
-all_matrix_axis.set_xlabel('# populations with mutation')
-all_matrix_axis.set_ylabel('# mutations in gene')
+all_matrix_axis.set_xlabel('# populations with mutation',labelpad=3)
+all_matrix_axis.set_ylabel('# mutations in gene',labelpad=3)
 
 all_matrix_axis.spines['top'].set_visible(False)
 all_matrix_axis.spines['right'].set_visible(False)
@@ -124,7 +118,7 @@ all_matrix_axis.set_xlim([0,6.05])
 all_matrix_axis.set_ylim([0,5.05])
 
 
-early_matrix_axis = plt.Subplot(fig6, matrix_grid[1])
+early_matrix_axis = plt.Subplot(fig6, matrix_grid[2])
 fig6.add_subplot(early_matrix_axis)
 
 early_matrix_axis.set_yticks([0.5,1.5,2.5,3.5,4.5])
@@ -142,7 +136,7 @@ early_matrix_axis.tick_params(axis='both', which='both',length=0)
 early_matrix_axis.set_xlim([0,6.05])
 early_matrix_axis.set_ylim([0,5.05])
 
-late_matrix_axis = plt.Subplot(fig6, matrix_grid[2])
+late_matrix_axis = plt.Subplot(fig6, matrix_grid[3])
 fig6.add_subplot(late_matrix_axis)
 
 late_matrix_axis.set_yticks([0.5,1.5,2.5,3.5,4.5])
@@ -162,7 +156,7 @@ late_matrix_axis.set_xlim([0,6.05])
 late_matrix_axis.set_ylim([0,5.05])
 
 
-cax = plt.Subplot(fig6, matrix_grid[3])
+cax = plt.Subplot(fig6, matrix_grid[4])
 fig6.add_subplot(cax)
 
 matrix_vmin = -20
@@ -204,11 +198,29 @@ pooled_time_axis.set_xlim([0,60000])
 #
 ####################################
 
-LRT_fig = plt.figure(figsize=(3, 1.7))
+#####
+#
+# Mutation spectrum panel
+#
+#####
 
-LRT_grid = gridspec.GridSpec(1, 1)
+LRT_fig = plt.figure(figsize=(8.5, 0.9))
 
-LRT_axis = plt.Subplot(LRT_fig, LRT_grid[0])
+LRT_grid = gridspec.GridSpec(1, 2, width_ratios=[5.6,1.4], wspace=0.175)
+
+probability_axis = plt.Subplot(LRT_fig, LRT_grid[0])
+LRT_fig.add_subplot(probability_axis)
+probability_axis.set_ylabel('Relative weight (%)',labelpad=3)
+
+probability_axis.spines['top'].set_visible(False)
+probability_axis.spines['right'].set_visible(False)
+probability_axis.get_xaxis().tick_bottom()
+probability_axis.get_yaxis().tick_left()
+probability_axis.get_yaxis().set_tick_params(direction='out',length=2,pad=1)
+probability_axis.get_xaxis().set_tick_params(direction='out',length=2,pad=1)
+
+
+LRT_axis = plt.Subplot(LRT_fig, LRT_grid[1])
 LRT_fig.add_subplot(LRT_axis)
 
 LRT_axis.spines['top'].set_visible(False)
@@ -221,6 +233,10 @@ LRT_axis.set_xlabel('Partition time, $t^*$',fontsize=6)
 LRT_axis.set_xticks(figure_utils.time_xticks)
 LRT_axis.set_xticklabels(figure_utils.time_xticklabels)
 LRT_axis.set_xlim([0,55000])
+
+LRT_axis.get_yaxis().set_tick_params(direction='out',length=2,pad=1)
+LRT_axis.get_xaxis().set_tick_params(direction='out',length=2,pad=1)
+
 
 ####################################
 #
@@ -490,7 +506,10 @@ observed_twohit_differences = numpy.array([twohit_time_distribution[gene_name][-
 observed_twohit_differences.sort()
 
 sys.stderr.write("Bootstrap resampling 2-hit genes...\t")
-num_bootstraps=10000
+if debug==True:
+    num_bootstraps=10
+else:
+    num_bootstraps=10000
 bootstrapped_twohit_differences = []
 for bootstrap_idx in xrange(0,num_bootstraps):
 
@@ -544,7 +563,10 @@ for tstar in tstars:
 observed_LRTs = numpy.array(observed_LRTs)
     
 sys.stderr.write("Bootstrap resampling parallel genes...\n")
-num_bootstraps=10000
+if debug==True:
+    num_bootstraps=10
+else:
+    num_bootstraps=10000
 
 bootstrapped_LRTs = []
 bootstrapped_kss = []
@@ -641,6 +663,8 @@ sys.stdout.write("Remaining total KS distance = %g, expected = %g (+/- %g), pval
 #
 ######################
 
+probability_tstar = numpy.median(parallel_times)
+
 upper_null_LRTs = []
 for i in xrange(0,len(tstars)):
 
@@ -651,9 +675,12 @@ for i in xrange(0,len(tstars)):
 
 upper_null_LRTs = numpy.array(upper_null_LRTs)
 
-LRT_axis.plot(tstars,observed_LRTs,'-',color=parse_file.nonmutator_group_color)
 LRT_axis.fill_between(tstars, numpy.zeros_like(tstars), upper_null_LRTs,color='0.7')
 LRT_axis.plot(tstars,upper_null_LRTs,'-',linewidth=0.25, color='0.6')
+line, = LRT_axis.plot([probability_tstar, probability_tstar],[0,observed_LRTs.max()*1.1],'k:',linewidth=0.25)
+line.set_dashes((1,1))
+LRT_axis.plot(tstars,observed_LRTs,'-',color=parse_file.nonmutator_group_color)
+
 LRT_axis.set_ylim([0,observed_LRTs.max()*1.1])
 
 observed_max_LRT = observed_LRTs.max()
@@ -676,7 +703,7 @@ for i in xrange(0,len(parallel_genes)):
 
     if gene_parallelism_statistics[parallel_genes[i]]['observed'] != current_num_hits:
         # reached the end of a block
-        current_position+=2
+        current_position+=1.25
         
         if grey:
             time_axis.fill_between( [previous_block_position-0.5,current_position-0.5],[-2000,-2000],[62000,62000],facecolor='0.85',linewidth=0.0)
@@ -684,7 +711,7 @@ for i in xrange(0,len(parallel_genes)):
         grey= not grey
         previous_block_position = current_position
         current_num_hits = gene_parallelism_statistics[parallel_genes[i]]['observed']
-
+        current_position-=0.75
     current_position += 1
     
     positions.append(current_position)
@@ -708,10 +735,11 @@ for i in xrange(0,len(parallel_genes)):
     gene_labels.append('%s%s (%d)' % (significance_string, parallel_genes[i], len(parallel_time_distribution[parallel_genes[i]])))
 
 time_axis.set_xticks(positions)
-time_axis.set_xticklabels(gene_labels, rotation='vertical',fontsize=3)
-time_axis.set_xlim([positions[0]-1.5,positions[-1]+1])
-probability_axis.set_xticks([])
-probability_axis.set_xlim([positions[0]-1.5,positions[-1]+1])
+time_axis.set_xticklabels(gene_labels, rotation='vertical',fontsize=5)
+time_axis.set_xlim([positions[0]-1,positions[-1]+1])
+probability_axis.set_xticks(positions)
+probability_axis.set_xticklabels(gene_labels, rotation='vertical',fontsize=4)
+probability_axis.set_xlim([positions[0]-1,positions[-1]+1])
 
 #######
 #
@@ -720,6 +748,8 @@ probability_axis.set_xlim([positions[0]-1.5,positions[-1]+1])
 #######
 
 tstar = numpy.median(parallel_times)
+
+probability_tstar = tstar
 
 early_late_time_distribution = calculate_early_late_time_distributions(parallel_gene_names, parallel_times, tstar)
 
@@ -734,12 +764,12 @@ early_ps = early_ns*1.0/early_ns.sum()*nsig*1.0/ntot
 late_ps = late_ns*1.0/late_ns.sum()*nsig*1.0/ntot
 
 probability_axis.plot(positions, all_ps*100, 'k.-',label='All',linewidth=0.5,markersize=3.0)
-probability_axis.plot(positions, early_ps*100, '.-', color=time_scalarMap.to_rgba(interpolated_time_CDF(10000)), label='$\leq \mathrm{Median}(t)$',alpha=0.5,linewidth=0.5,markersize=3.0)
-probability_axis.plot(positions, late_ps*100, '.-', color=time_scalarMap.to_rgba(interpolated_time_CDF(50000)),label='$>\mathrm{Median}(t)$',alpha=0.5,linewidth=0.5,markersize=3.0)
+probability_axis.plot(positions, early_ps*100, '.-', color=time_scalarMap.to_rgba(interpolated_time_CDF(10000)), label='Early',alpha=0.5,linewidth=0.5,markersize=3.0)
+probability_axis.plot(positions, late_ps*100, '.-', color=time_scalarMap.to_rgba(interpolated_time_CDF(50000)),label='Late',alpha=0.5,linewidth=0.5,markersize=3.0)
 
 sys.stdout.write("Median time of significant genes: %g\n" % tstar)
 
-probability_axis.legend(loc='upper right', frameon=False, ncol=3)
+probability_axis.legend(loc='upper right', frameon=False, ncol=3,fontsize=5)
 
 #######
 #
@@ -771,7 +801,11 @@ early_dms = []
 late_dms = []
 bootstrapped_early_dms = []
 bootstrapped_late_dms = []
-num_bootstraps = 10000
+if debug==True:
+    num_bootstraps=10
+else:
+    num_bootstraps=10000
+    
 for tstar in tstars:
     
     # First look at genes with median time <= tstar
@@ -971,23 +1005,25 @@ for tmin, tmax, matrix_axis in zip([-1000, -1000, tstar],[65000, tstar, 65000], 
             #else:
             #    matrix_axis.text(x-0.05,y,'$n_g = %d$' % raw_count,size=4)
 
-            matrix_axis.text(x-0.05,y,'$n_g=%d$' % raw_count,size=4)
+            matrix_axis.text(x+0.25,y-0.05,'$n_g=%d$' % raw_count,size=5,horizontalalignment='center')
 
 
     sys.stderr.write("Done!\n")
 
 # Plot some text
-all_matrix_axis.text(0.05,5.2,'All genes ($\\Delta m = %0.1f$)' % y0)
-early_matrix_axis.text(0.05,5.2,'Median time $<t^*$ ($\\Delta m_< = %0.1f$)' % early_ymax)
-late_matrix_axis.text(0.05,5.2,'Median time $\geq t^*$ ($\\Delta m_> = %0.1f$)' % ymax)
+all_matrix_axis.text(5.95,4,'All genes \n($\\Delta m = %0.1f$)' % y0,horizontalalignment='right')
+early_matrix_axis.text(5.95,4,'Median time $<t^*$\n($\\Delta m_<=%0.1f$)  ' % early_ymax,horizontalalignment='right')
+late_matrix_axis.text(5.95,4,'Median time $\geq t^*$\n($\\Delta m_>=%0.1f$)  ' % ymax,horizontalalignment='right')
 #all_matrix_axis.text(5.9,4,'$m =$ missed opportunities\n $n_g =$ # genes',fontsize=4,horizontalalignment='right')
-all_matrix_axis.text(5.9,4,'$n_g =$ # genes',fontsize=4,horizontalalignment='right')
+all_matrix_axis.text(5.9,2.5,'$n_g =$ # genes',fontsize=5,horizontalalignment='right')
 
 
 matrix_scalarMap.set_array(excess_probability_matrix)
 cbar = plt.colorbar(matrix_scalarMap, cax=cax,orientation='vertical',ticks=[-20,-10,0,10,20])
-cbar.set_label('Excess probability, $\Delta P$ (%)',rotation=270,labelpad=10) 
-
+cax.set_yticklabels(['<-20', '-10', '0', '10','> 20'])  # vertically oriented colorbar
+cax.yaxis.set_tick_params(pad=1.5)
+#cbar.set_label('Excess probability, $\Delta P$ (%)',rotation=270,labelpad=10) 
+cax.text(0.5,-0.07,'Excess\nprobability\n $\Delta P$ (%)',horizontalalignment='center',verticalalignment='top')
 ####
 #
 # Figure labels
@@ -995,10 +1031,12 @@ cbar.set_label('Excess probability, $\Delta P$ (%)',rotation=270,labelpad=10)
 ####
  
 time_axis.text(-3, 70000, figure_utils.get_panel_label('a'),fontsize=6,fontweight='bold')
-probability_axis.text(1, 2.3, figure_utils.get_panel_label('b'), fontsize=6, fontweight='bold')
-all_matrix_axis.text(5.5,5.2,figure_utils.get_panel_label('c'), fontsize=6, fontweight='bold')
-early_matrix_axis.text(5.5,5.2,figure_utils.get_panel_label('d'), fontsize=6, fontweight='bold')
-late_matrix_axis.text(5.5,5.2,figure_utils.get_panel_label('e'), fontsize=6, fontweight='bold')
+all_matrix_axis.text(-1.35,4.55,figure_utils.get_panel_label('b'), fontsize=6, fontweight='bold')
+early_matrix_axis.text(-0.35, 4.55,figure_utils.get_panel_label('c'), fontsize=6, fontweight='bold')
+late_matrix_axis.text(-0.35, 4.55,figure_utils.get_panel_label('d'), fontsize=6, fontweight='bold')
+ 
+probability_axis.text(1, 2.45, figure_utils.get_panel_label('a'), fontsize=6, fontweight='bold')
+LRT_axis.text(2000, 118, figure_utils.get_panel_label('b'), fontsize=6, fontweight='bold') 
  
 #######
 #
@@ -1009,8 +1047,8 @@ if level=='gene':
 
     fig6.savefig( parse_file.figure_directory+"fig6.pdf",bbox_inches='tight')
     pooled_fig.savefig( parse_file.figure_directory+"supplemental_pooled_times.pdf", bbox_inches='tight')
-    LRT_fig.savefig( parse_file.figure_directory+"supplemental_temporal_LRT.pdf",bbox_inches='tight')
-    twohit_fig.savefig( parse_file.figure_directory+"extended_data_fig7.pdf",bbox_inches='tight')
+    LRT_fig.savefig( parse_file.figure_directory+"extended_data_fig7.pdf",bbox_inches='tight')
+    twohit_fig.savefig( parse_file.figure_directory+"extended_data_fig6.pdf",bbox_inches='tight')
     missed_opportunity_fig.savefig( parse_file.figure_directory+"extended_data_fig9.pdf",bbox_inches='tight')   
     
 elif level=='operon':

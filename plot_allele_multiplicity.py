@@ -53,6 +53,9 @@ mutator_axis.spines['right'].set_visible(False)
 mutator_axis.get_xaxis().tick_bottom()
 mutator_axis.get_yaxis().tick_left()
 
+nonmutator_axis.text(0.6,1.5e03,figure_utils.get_panel_label('a'),fontsize=6,fontweight='bold')
+mutator_axis.text(0.6,1.5e05,figure_utils.get_panel_label('b'),fontsize=6,fontweight='bold')
+
 ####
 #
 # Do calculation
@@ -156,5 +159,5 @@ for population_group in ['nonmutators','mutators']:
     
 nonmutator_axis.set_xticklabels([])
 sys.stderr.write("Saving figure...\t")
-fig.savefig(parse_file.figure_directory+'extended_data_fig4.pdf',bbox_inches='tight') 
+fig.savefig(parse_file.figure_directory+'extended_data_fig3.pdf',bbox_inches='tight') 
 sys.stderr.write("Done!\n")    
