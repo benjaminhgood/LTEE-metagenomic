@@ -54,11 +54,13 @@ for filename in ["biosample_submission_%d_results.tsv" % file_idx for file_idx i
         
         sample_accession_map[sample_title] = sample_accession
         
-sra_filename_file = open("sra_filenames.txt", "w")
 
 sra_file_idx = 1
 output_file = open("sra_submission_%d.tsv" % sra_file_idx, "w")
 output_file.write("\t".join(column_headers))
+
+sra_filename_file = open("sra_filenames_%d.txt" % sra_file_idx, "w")
+
   
 population_file = open("population_samples.csv","r")
 population_file.readline() # header
@@ -76,6 +78,11 @@ for line in population_file:
         sra_file_idx+=1
         output_file = open("sra_submission_%d.tsv" % sra_file_idx, "w")
         output_file.write("\t".join(column_headers))
+        
+        sra_filename_file.close()
+        sra_filename_file = open("sra_filenames_%d.txt" % sra_file_idx, "w")
+
+        
         sra_idx = 1
 
     items = line.split(",")
@@ -215,3 +222,4 @@ for line in population_file:
         output_file.write("\t".join(column_strs))
         
 sra_filename_file.close()
+output_file.close()

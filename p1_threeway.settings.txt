@@ -11,7 +11,7 @@ tmin = 0
 tmax = 60000
 
 # Output filename
-filename = parse_file.figure_directory+'supplemental_p1_threeway.png'
+filename = parse_file.figure_directory+'supplemental_p1_threeway.pdf'
 
 # Mininum coverage for frequency estimation vs interpolation 
 min_coverage = 10
